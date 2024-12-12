@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-4">
+  <div class="w-9/12 p-4 bg-white list-jokes">
     <div v-if="isLoading" class="text-center">Cargando...</div>
     <div v-else-if="error" class="text-center text-red-500">{{ error }}</div>
     <div v-else>
@@ -9,7 +9,7 @@
     </div>
   </div>
 
-  <div class="w-full flex justify-center gap-4 p-4 bg-white shadow-md">
+  <div class="w-full flex justify-center gap-4 p-4 shadow-md pagination bg-gray-800 text-white">
     <button
       @click="page--"
       :disabled="page === 1"
@@ -33,3 +33,9 @@ import { useJokes } from "../composables/useJokes";
 import JokeItem from "./JokeItem.vue";
 const { paginatedJokes, isLoading, error, page, totalPages } = useJokes();
 </script>
+
+<style scoped>
+.list-jokes {
+  min-height: 85.6vh;
+}
+</style>
