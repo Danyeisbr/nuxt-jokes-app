@@ -12,10 +12,10 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, computed } from "vue";
 import { useJokes } from "../composables/useJokes";
 
-defineProps({
+const props = defineProps({
   joke: {
     type: Object,
     required: true,
@@ -24,11 +24,11 @@ defineProps({
 
 const { toggleFavorite, removeJoke, favorites } = useJokes();
 const isFavorite = computed(() =>
-  favorites.value.some((fav) => fav.id === joke.id)
+  favorites.value.some((fav) => fav.id === props.joke.id)
 );
 </script>
 
-<style scoped>
+<style>
 .joke-item {
   border: 1px solid #ccc;
   padding: 1rem;

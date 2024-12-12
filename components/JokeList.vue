@@ -1,60 +1,35 @@
 <template>
-  <div>
-    <div class="controls">
-      <button @click="goToAddJoke">Agregar Broma</button>
-      <button @click="goToFavorites">Favoritos</button>
-    </div>
-    <div v-if="isLoading">Cargando...</div>
-    <div v-else-if="error">{{ error }}</div>
+  <div class="w-full p-4">
+    <div v-if="isLoading" class="text-center">Cargando...</div>
+    <div v-else-if="error" class="text-center text-red-500">{{ error }}</div>
     <div v-else>
-      <div class="joke-list">
-        <JokeItem
-          v-for="joke in paginatedJokes"
-          :key="joke.id"
-          :joke="joke"
-        />
-      </div>
-      <div class="pagination">
-        <button @click="page--" :disabled="page === 1">Anterior</button>
-        <span>Página {{ page }}</span>
-        <button @click="page++" :disabled="page >= totalPages">Siguiente</button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <JokeItem v-for="joke in paginatedJokes" :key="joke.id" :joke="joke" />
       </div>
     </div>
+  </div>
+
+  <div class="w-full flex justify-center gap-4 p-4 bg-white shadow-md">
+    <button
+      @click="page--"
+      :disabled="page === 1"
+      class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded disabled:opacity-50"
+    >
+      Anterior
+    </button>
+    <span class="self-center">Página {{ page }} de {{ totalPages }}</span>
+    <button
+      @click="page++"
+      :disabled="page >= totalPages"
+      class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded disabled:opacity-50"
+    >
+      Siguiente
+    </button>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
 import { useJokes } from "../composables/useJokes";
 import JokeItem from "./JokeItem.vue";
-
-const { paginatedJokes, isLoading, error, page, jokesPerPage } = useJokes();
-
-const router = useRouter();
-
-const goToAddJoke = () => {
-  router.push("/jokes/add");
-};
-
-const goToFavorites = () => {
-  router.push("/favorites");
-};
+const { paginatedJokes, isLoading, error, page, totalPages } = useJokes();
 </script>
-
-<style scoped>
-.controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-.joke-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-}
-</style>

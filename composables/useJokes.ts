@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import type { Joke } from "../types/joke";
 
 export function useJokes() {
@@ -7,7 +7,7 @@ export function useJokes() {
   const isLoading = ref(false);
   const error = ref<null | string>(null);
   const page = ref(1);
-  const jokesPerPage = ref(8);
+  const jokesPerPage = ref(9);
   const sortField = ref<"setup" | "punchline">("setup");
   const sortOrder = ref<"asc" | "desc">("asc");
 
@@ -80,6 +80,22 @@ export function useJokes() {
     return sortedJokes.value.slice(start, end);
   });
 
+  const totalPages = computed(() =>
+    Math.ceil(jokes.value.length / jokesPerPage.value)
+  );
+
+  const nextPage = () => {
+    if (page.value < totalPages.value) {
+      page.value++;
+    }
+  };
+
+  const prevPage = () => {
+    if (page.value > 1) {
+      page.value--;
+    }
+  };
+
   onMounted(() => {
     loadFromLocalStorage();
     if (jokes.value.length === 0) {
@@ -102,5 +118,8 @@ export function useJokes() {
     toggleFavorite,
     paginatedJokes,
     loadFromLocalStorage,
+    totalPages,
+    nextPage,
+    prevPage,
   };
 }
