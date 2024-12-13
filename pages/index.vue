@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <Nav />
     <main class="flex flex-col items-center justify-center bg-slate-100 w-full">
       <JokeList />
     </main>
@@ -8,6 +7,5 @@
 </template>
 
 <script setup>
-import Nav from "../components/Nav.vue";
 import JokeList from "../components/JokeList.vue";
 </script>

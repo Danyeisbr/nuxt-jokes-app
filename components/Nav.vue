@@ -3,7 +3,7 @@
     <nav
       class="fixed top-0 left-0 w-full bg-gray-800 text-white p-4 flex justify-between items-center"
     >
-      <h1 class="text-xl font-bold">Jokes App</h1>
+      <h1 class="text-xl font-bold cursor-pointer" @click="goHome">Jokes App</h1>
       <div class="space-x-4">
         <button
           @click="goToAddJoke"
@@ -36,5 +36,9 @@ const goToAddJoke = () => {
 
 const goToFavorites = () => {
   router.push("/favorites");
+};
+
+const goHome = () => {
+  router.push("/");
 };
 </script>

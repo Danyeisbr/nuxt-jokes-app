@@ -9,4 +9,15 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  vite: {
+    server: {
+      proxy: {
+        '/api': {
+          target: 'https://official-joke-api.appspot.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
+  },
 })

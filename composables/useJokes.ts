@@ -11,56 +11,51 @@ export function useJokes() {
   const sortField = ref<"setup" | "punchline">("setup");
   const sortOrder = ref<"asc" | "desc">("asc");
 
-  const saveToLocalStorage = () => {
-    localStorage.setItem("jokes", JSON.stringify(jokes.value));
-    localStorage.setItem("favorites", JSON.stringify(favorites.value));
-  };
-
-  const loadFromLocalStorage = () => {
-    const storedJokes = localStorage.getItem("jokes");
-    const storedFavorites = localStorage.getItem("favorites");
-    jokes.value = storedJokes ? JSON.parse(storedJokes) : [];
-    favorites.value = storedFavorites ? JSON.parse(storedFavorites) : [];
+  const saveNewJokesToLocalStorage = () => {
+    const newJokes = jokes.value.filter(joke => joke.isNew);
+    localStorage.setItem("newJokes", JSON.stringify(newJokes));
   };
 
   const fetchJokes = async () => {
     isLoading.value = true;
     error.value = null;
-
+  
     try {
-      const response = await fetch(
-        "https://official-joke-api.appspot.com/jokes/random/40"
-      );
+      const response = await fetch("/api/jokes/random/40");
       if (!response.ok) throw new Error("Failed to fetch jokes");
-      jokes.value = await response.json();
-      saveToLocalStorage();
+      const fetchedJokes = await response.json();
+      jokes.value = [...jokes.value, ...fetchedJokes];
     } catch (err) {
       error.value = (err as Error).message || "An error occurred";
     } finally {
       isLoading.value = false;
     }
   };
-
+  
   const addJoke = (newJoke: Joke) => {
+    newJoke.isNew = true;
     jokes.value.unshift(newJoke);
-    saveToLocalStorage();
+    saveNewJokesToLocalStorage();
   };
 
   const removeJoke = (id: number) => {
-    jokes.value = jokes.value.filter((joke) => joke.id !== id);
-    favorites.value = favorites.value.filter((joke) => joke.id !== id);
-    saveToLocalStorage();
+    jokes.value = [...jokes.value.filter((joke) => joke.id !== id)];
+    saveNewJokesToLocalStorage();
   };
 
-  const toggleFavorite = (joke: Joke) => {
-    const index = favorites.value.findIndex((fav) => fav.id === joke.id);
-    if (index !== -1) {
-      favorites.value.splice(index, 1);
-    } else {
-      favorites.value.push(joke);
+  const setRating = (id: number, rating: number) => {
+    const joke = jokes.value.find((joke) => joke.id === id);
+    if (joke) {
+      joke.rating = rating;
+      saveNewJokesToLocalStorage();
     }
-    saveToLocalStorage();
   };
+
+  const loadFromLocalStorage = () => {
+    const storedNewJokes = localStorage.getItem("newJokes");
+    const newJokes = storedNewJokes ? JSON.parse(storedNewJokes) : [];
+    jokes.value = [...newJokes, ...jokes.value];
+   };
 
   const sortedJokes = computed(() => {
     const sorted = [...jokes.value].sort((a, b) => {
@@ -77,7 +72,8 @@ export function useJokes() {
   const paginatedJokes = computed(() => {
     const start = (page.value - 1) * jokesPerPage.value;
     const end = start + jokesPerPage.value;
-    return sortedJokes.value.slice(start, end);
+    const sliced = sortedJokes.value.slice(start, end);
+    return sliced;
   });
 
   const totalPages = computed(() =>
@@ -115,7 +111,7 @@ export function useJokes() {
     fetchJokes,
     addJoke,
     removeJoke,
-    toggleFavorite,
+    setRating,
     paginatedJokes,
     loadFromLocalStorage,
     totalPages,
