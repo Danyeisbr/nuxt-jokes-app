@@ -12,8 +12,8 @@ export function useJokes() {
   const sortOrder = ref<"asc" | "desc">("asc");
 
   const saveNewJokesToLocalStorage = () => {
-    const newJokes = jokes.value.filter(joke => joke.isNew);
-    localStorage.setItem("newJokes", JSON.stringify(newJokes));
+    const newJokes = jokes.value.filter(joke => joke);
+    localStorage.setItem("jokes", JSON.stringify(newJokes));
   };
 
   const fetchJokes = async () => {
@@ -21,7 +21,7 @@ export function useJokes() {
     error.value = null;
   
     try {
-      const response = await fetch("/api/jokes/random/40");
+      const response = await fetch("/api/jokes/random/5");
       if (!response.ok) throw new Error("Failed to fetch jokes");
       const fetchedJokes = await response.json();
       jokes.value = [...jokes.value, ...fetchedJokes];
@@ -33,14 +33,18 @@ export function useJokes() {
   };
   
   const addJoke = (newJoke: Joke) => {
-    newJoke.isNew = true;
     jokes.value.unshift(newJoke);
     saveNewJokesToLocalStorage();
   };
 
   const removeJoke = (id: number) => {
-    jokes.value = [...jokes.value.filter((joke) => joke.id !== id)];
-    saveNewJokesToLocalStorage();
+    const index = jokes.value.findIndex((joke) => joke.id === id); 
+    if (index !== -1) {
+      jokes.value.splice(index, 1);
+    }
+
+    if(page.value > 1 && paginatedJokes.value.length === 0) page.value--;
+    saveNewJokesToLocalStorage();  
   };
 
   const setRating = (id: number, rating: number) => {
@@ -52,7 +56,7 @@ export function useJokes() {
   };
 
   const loadFromLocalStorage = () => {
-    const storedNewJokes = localStorage.getItem("newJokes");
+    const storedNewJokes = localStorage.getItem("jokes");
     const newJokes = storedNewJokes ? JSON.parse(storedNewJokes) : [];
     jokes.value = [...newJokes, ...jokes.value];
    };

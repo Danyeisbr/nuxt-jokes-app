@@ -17,16 +17,16 @@
         />
       </span>
     </div>
-      <button @click="removeJoke(joke.id)" class="text-gray-500 hover:text-gray-700">Eliminar</button>
+      <button @click="onDelete" class="text-gray-500 hover:text-gray-700">Delete</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { StarIcon as StarIconOutline, StarIcon as StarIconSolid } from "@heroicons/vue/solid";
-import { reactive } from "vue";
 import { defineProps } from "vue";
 import { useJokes } from "../composables/useJokes";
+const { setRating } = useJokes();
 
 const props = defineProps({
   joke: {
@@ -35,7 +35,14 @@ const props = defineProps({
   },
 });
 
-const { setRating, removeJoke } = useJokes();
+const emit = defineEmits(["remove"]);
+
+const onDelete = () => {
+  if (!props.joke) {
+    return;
+  }
+  emit("remove", props.joke.id);
+};
 
 const rateJoke = (rating) => {
   props.joke.rating = rating;
