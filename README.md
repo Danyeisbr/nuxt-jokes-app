@@ -1,5 +1,3 @@
-# Nuxt Minimal Starter
-
 # Jokes Management App
 
 ## Project Overview
@@ -108,3 +106,6 @@ bun run preview
 Complete the Favorites Section for users to view and manage their favorite jokes.
 Enhance the UI with animations and improved styling using Tailwind CSS.
 Add user authentication for personalized joke management.
+
+![image](https://github.com/user-attachments/assets/2760bcc0-47e4-4ab4-b360-157791ce3faa)
+
