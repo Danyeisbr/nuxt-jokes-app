@@ -21,7 +21,7 @@ export function useJokes() {
     error.value = null;
   
     try {
-      const response = await fetch("/api/jokes/random/5");
+      const response = await fetch("/api/jokes/random/25");
       if (!response.ok) throw new Error("Failed to fetch jokes");
       const fetchedJokes = await response.json();
       jokes.value = [...jokes.value, ...fetchedJokes];
@@ -121,5 +121,6 @@ export function useJokes() {
     totalPages,
     nextPage,
     prevPage,
+    sortedJokes,
   };
 }

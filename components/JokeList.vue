@@ -36,7 +36,7 @@
 <script setup>
 import { useJokes } from "../composables/useJokes";
 import JokeItem from "./JokeItem.vue";
-const { paginatedJokes, isLoading, error, page, totalPages, removeJoke } = useJokes();
+const { sortedJokes, paginatedJokes, isLoading, error, page, totalPages, removeJoke } = useJokes();
 
 const removeJokeHandler = (id) => {
   removeJoke(id);
